@@ -1,3 +1,7 @@
+package model;
+
+import exception.InvalidDataException;
+
 public abstract class Person {
 
     protected int id;
@@ -25,7 +29,7 @@ public abstract class Person {
     }
 
     public void setName(String name) {
-        if (name == null  name.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
             throw new InvalidDataException("Name cannot be empty");
         }
         this.name = name.trim();
@@ -39,7 +43,7 @@ public abstract class Person {
     }
 
     public void setPhone(String phone) {
-        if (phone == null  phone.trim().length() < 5) {
+        if (phone == null || phone.trim().length() < 5) {
             throw new InvalidDataException("Phone is too short");
         }
         this.phone = phone.trim();
@@ -49,7 +53,6 @@ public abstract class Person {
         return "ID=" + id + ", Name=" + name + ", Age=" + age + ", Phone=" + phone;
     }
 
-    // polymorphism methods
     public abstract void work();
     public abstract String getRole();
 

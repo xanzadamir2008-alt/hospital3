@@ -1,3 +1,11 @@
+package menu;
+
+import exception.InvalidDataException;
+import model.Appointment;
+import model.Doctor;
+import model.Patient;
+import model.Person;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -237,4 +245,4 @@ public class MenuManager implements Menu {
         a.reschedule(newDate);
         System.out.println("Rescheduled: " + a);
     }
-}}
+}

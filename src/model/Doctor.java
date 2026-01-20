@@ -1,3 +1,7 @@
+package model;
+
+import exception.InvalidDataException;
+
 public class Doctor extends Person {
 
     private String specialization;

@@ -1,3 +1,7 @@
+package model;
+
+import exception.InvalidDataException;
+
 public class Appointment {
 
     private int appointmentId;
@@ -18,19 +22,20 @@ public class Appointment {
     public String getStatus() { return status; }
 
     public void setAppointmentId(int appointmentId) {
-        if (appointmentId <= 0) throw new IllegalArgumentException("Appointment ID must be positive");
+        if (appointmentId <= 0)
+            throw new IllegalArgumentException("Appointment ID must be positive");
         this.appointmentId = appointmentId;
     }
 
     public void setPatientName(String patientName) {
-        if (patientName == null  patientName.trim().isEmpty())
-        throw new InvalidDataException("Patient name cannot be empty");
+        if (patientName == null || patientName.trim().isEmpty()) // исправлено
+            throw new InvalidDataException("Patient name cannot be empty");
         this.patientName = patientName.trim();
     }
 
     public void setDoctorName(String doctorName) {
-        if (doctorName == null  doctorName.trim().isEmpty())
-        throw new InvalidDataException("Doctor name cannot be empty");
+        if (doctorName == null || doctorName.trim().isEmpty()) // исправлено
+            throw new InvalidDataException("Doctor name cannot be empty");
         this.doctorName = doctorName.trim();
     }
 
