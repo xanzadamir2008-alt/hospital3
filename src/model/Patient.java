@@ -1,5 +1,6 @@
 package model;
 
+
 import exception.InvalidDataException;
 
 public class Patient extends Person {

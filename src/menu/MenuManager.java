@@ -6,6 +6,7 @@ import model.Doctor;
 import model.Patient;
 import model.Person;
 
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
