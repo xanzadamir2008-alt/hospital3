@@ -110,9 +110,9 @@ public class MenuManager implements Menu {
 
     // ------- seed data -------
     private void seedData() {
-        people.add(new Patient(2, "Aruzhan T.", 17, "+77000000002", "O+"));
-        people.add(new Doctor(3, "Dr. Ali", 40, "+77000000003", "Surgeon", 12));
-        appointments.add(new Appointment(5001, "Aruzhan T.", "Dr. Ali", "20.03.2025"));
+        people.add(new Patient(2, "Mirambaeve T.", 17, "+77000000009", "2+"));
+        people.add(new Doctor(3, "Dr. Maqsat", 37, "+77000000006", "Surgeon", 10));
+        appointments.add(new Appointment(5001, "Mirambaeve T.", "Dr. Maqsat", "20.03.2025"));
     }
 
     // ------- people -------
