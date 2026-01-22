@@ -1,11 +1,8 @@
 package menu;
 
+import database.PersonDAO;
 import exception.InvalidDataException;
-import model.Appointment;
-import model.Doctor;
-import model.Patient;
-import model.Person;
-
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,6 +12,7 @@ public class MenuManager implements Menu {
     private ArrayList<Person> people = new ArrayList<>();
     private ArrayList<Appointment> appointments = new ArrayList<>();
     private Scanner sc = new Scanner(System.in);
+    private PersonDAO personDAO = new PersonDAO();
 
     public MenuManager() {
         seedData();
@@ -22,13 +20,13 @@ public class MenuManager implements Menu {
 
     @Override
     public void showMenu() {
-        System.out.println("\n===== HOSPITAL MENU (Assignment 3) =====");
-        System.out.println("1. Add Patient");
-        System.out.println("2. Add Doctor");
-        System.out.println("3. View All People");
+        System.out.println("\n===== HOSPITAL MENU (Week 6 + Week 7) =====");
+        System.out.println("1. Add Patient (DB)");
+        System.out.println("2. Add Doctor (DB)");
+        System.out.println("3. View All People (ArrayList)");
         System.out.println("4. Polymorphism Demo (work())");
-        System.out.println("5. View Only Patients (instanceof)");
-        System.out.println("6. View Only Doctors (instanceof)");
+        System.out.println("5. View Patients (DB)");
+        System.out.println("6. View Doctors (DB)");
         System.out.println("7. Add Appointment");
         System.out.println("8. View Appointments");
         System.out.println("9. Cancel Appointment by ID");
@@ -46,58 +44,35 @@ public class MenuManager implements Menu {
 
             try {
                 switch (choice) {
-                    case 1:
-                        addPatient();
-                        break;
-                    case 2:
-                        addDoctor();
-                        break;
-                    case 3:
-                        viewAllPeople();
-                        break;
-                    case 4:
-                        demoPolymorphism();
-                        break;
-                    case 5:
-                        viewOnlyPatients();
-                        break;
-                    case 6:
-                        viewOnlyDoctors();
-                        break;
-                    case 7:
-                        addAppointment();
-                        break;
-                    case 8:
-                        viewAppointments();
-                        break;
-                    case 9:
-                        cancelAppointmentById();
-                        break;
-                    case 10:
-                        rescheduleAppointmentById();
-                        break;
-                    case 0:
+                    case 1 -> addPatient();
+                    case 2 -> addDoctor();
+                    case 3 -> viewAllPeople();
+                    case 4 -> demoPolymorphism();
+                    case 5 -> viewPatientsFromDB();
+                    case 6 -> viewDoctorsFromDB();
+                    case 7 -> addAppointment();
+                    case 8 -> viewAppointments();
+                    case 9 -> cancelAppointmentById();
+                    case 10 -> rescheduleAppointmentById();
+                    case 0 -> {
                         run = false;
                         System.out.println("Bye!");
-                        break;
-                    default:
-                        System.out.println("Wrong option.");
+                    }
+                    default -> System.out.println("Wrong option.");
                 }
-            } catch (IllegalArgumentException e) {
-                System.out.println("ERROR: " + e.getMessage());
-            } catch (InvalidDataException e) {
+            } catch (IllegalArgumentException | InvalidDataException e) {
                 System.out.println("ERROR: " + e.getMessage());
             }
         }
-
-        sc.close();
     }
+
+    // ---------- helpers ----------
 
     private int readInt(String prompt) {
         System.out.print(prompt);
         while (!sc.hasNextInt()) {
             System.out.print("Enter number: ");
-            sc.nextLine();
+            sc.next();
         }
         int x = sc.nextInt();
         sc.nextLine();
@@ -109,30 +84,34 @@ public class MenuManager implements Menu {
         return sc.nextLine();
     }
 
-    // ------- seed data -------
     private void seedData() {
-        people.add(new Patient(2, "Mirambaeve T.", 17, "+77000000009", "2+"));
+        people.add(new Patient(2, "Mirambaeva T.", 17, "+77000000007", "2+"));
         people.add(new Doctor(3, "Dr. Maqsat", 37, "+77000000006", "Surgeon", 10));
-        appointments.add(new Appointment(5001, "Mirambaeve T.", "Dr. Maqsat", "20.03.2025"));
+        appointments.add(new Appointment(5007, "Mirambaeva T.", "Dr. Maqsat", "20.03.2025"));
     }
 
-    // ------- people -------
+    // ---------- people ----------
+
     private void addPatient() {
         System.out.println("\n--- ADD PATIENT ---");
+
         int id = readInt("ID: ");
         String name = readLine("Name: ");
         int age = readInt("Age: ");
         String phone = readLine("Phone: ");
         String blood = readLine("Blood type: ");
 
-        Person p = new Patient(id, name, age, phone, blood);
-        people.add(p);
+        Patient patient = new Patient(id, name, age, phone, blood);
 
-        System.out.println("Added: " + p);
+        people.add(patient);                 // Week 6
+        personDAO.insertPatient(patient);    // Week 7
+
+        System.out.println("Patient saved to DB: " + patient);
     }
 
     private void addDoctor() {
         System.out.println("\n--- ADD DOCTOR ---");
+
         int id = readInt("ID: ");
         String name = readLine("Name: ");
         int age = readInt("Age: ");
@@ -140,18 +119,19 @@ public class MenuManager implements Menu {
         String spec = readLine("Specialization: ");
         int exp = readInt("Experience years: ");
 
-        Person d = new Doctor(id, name, age, phone, spec, exp);
-        people.add(d);
+        Doctor doctor = new Doctor(id, name, age, phone, spec, exp);
 
-        System.out.println("Added: " + d);
+        people.add(doctor);                 // Week 6
+        personDAO.insertDoctor(doctor
+
+
+        );     // Week 7
+
+        System.out.println("Doctor saved to DB: " + doctor);
     }
 
     private void viewAllPeople() {
-        System.out.println("\n--- ALL PEOPLE ---");
-        if (people.isEmpty()) {
-            System.out.println("No people.");
-            return;
-        }
+        System.out.println("\n--- ALL PEOPLE (ArrayList) ---");
         for (Person p : people) {
             System.out.println(p);
         }
@@ -165,27 +145,21 @@ public class MenuManager implements Menu {
         }
     }
 
-    private void viewOnlyPatients() {
-        System.out.println("\n--- ONLY PATIENTS ---");
-        for (Person p : people) {
-            if (p instanceof Patient) {
-                Patient x = (Patient) p;
-                System.out.println(x);
-                System.out.println("   Minor=" + x.isMinor() + ", Category=" + x.getAgeCategory());
-            }
+    private void viewPatientsFromDB() {
+        System.out.println("\n--- PATIENTS FROM DATABASE ---");
+        for (Patient p : personDAO.getAllPatients()) {
+            System.out.println(p);
         }
     }
 
-    private void viewOnlyDoctors() {
-        System.out.println("\n--- ONLY DOCTORS ---");
-        for (Person p : people) {
-            if (p instanceof Doctor) {
-                Doctor x = (Doctor) p;
-                System.out.println(x);
-                System.out.println("   Experienced=" + x.isExperienced() + ", Surgery=" + x.canPerformSurgery());
-            }
+    private void viewDoctorsFromDB() {
+        System.out.println("\n--- DOCTORS FROM DATABASE ---");
+        for (Doctor d : personDAO.getAllDoctors()) {
+            System.out.println(d);
         }
     }
+
+    // ---------- appointments ----------
 
     private void addAppointment() {
         System.out.println("\n--- ADD APPOINTMENT ---");
@@ -194,18 +168,11 @@ public class MenuManager implements Menu {
         String doctor = readLine("Doctor name: ");
         String date = readLine("Date: ");
 
-        Appointment a = new Appointment(id, patient, doctor, date);
-        appointments.add(a);
-
-        System.out.println("Added: " + a);
+        appointments.add(new Appointment(id, patient, doctor, date));
     }
 
     private void viewAppointments() {
         System.out.println("\n--- APPOINTMENTS ---");
-        if (appointments.isEmpty()) {
-            System.out.println("No appointments.");
-            return;
-        }
         for (Appointment a : appointments) {
             System.out.println(a);
         }
@@ -219,31 +186,14 @@ public class MenuManager implements Menu {
     }
 
     private void cancelAppointmentById() {
-        System.out.println("\n--- CANCEL APPOINTMENT ---");
-        int id = readInt("Enter appointment ID: ");
+        int id = readInt("Appointment ID: ");
         Appointment a = findAppointmentById(id);
-
-        if (a == null) {
-            System.out.println("Not found.");
-            return;
-        }
-
-        a.cancel();
-        System.out.println("Cancelled: " + a);
+        if (a != null) a.cancel();
     }
 
     private void rescheduleAppointmentById() {
-        System.out.println("\n--- RESCHEDULE APPOINTMENT ---");
-        int id = readInt("Enter appointment ID: ");
+        int id = readInt("Appointment ID: ");
         Appointment a = findAppointmentById(id);
-
-        if (a == null) {
-            System.out.println("Not found.");
-            return;
-        }
-
-        String newDate = readLine("New date: ");
-        a.reschedule(newDate);
-        System.out.println("Rescheduled: " + a);
+        if (a != null) a.reschedule(readLine("New date: "));
     }
 }
