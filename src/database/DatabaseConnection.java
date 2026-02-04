@@ -16,4 +16,15 @@ public class DatabaseConnection {
             throw new RuntimeException("DB connection failed", e);
         }
     }
+
+    public static void closeConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Connection closed.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
